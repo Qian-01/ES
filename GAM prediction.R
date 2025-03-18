@@ -4,6 +4,20 @@ library(dplyr)
 library(sf)
 library(data.table)
 #setwd()
+
+#after GAM selection.R (removing the savannas, evi, tmin, elevation,Urban_and_Builtup)
+predictors_names_gam<-c("Water_bodies", "Evergreen_Needleleaf_Forests", "Evergreen_Broadleaf_Forests",
+               "Deciduous_Needleleaf_Forests","Deciduous_Broadleaf_Forests","Mixed_Forests",
+               "Closed_Shrublands","Open_Shrublands","Woody_Savannas","Grasslands","Permanent_Wetlands",
+               "Croplands","Cropland_Natural_Vegetation_Mosaics",
+               "Snow_and_Ice","Barren_or_Sparsely_Vegetated","ndvi", "pop", "prec", 
+                     "tmax","ws","rh", "sp", "urban_acc_30s")
+gam_formula <- as.formula(paste("occurrence ~", paste("s(", predictors_names_gam, ")", collapse = " + ")))
+gam.fit0.0<- gam(gam_formula,family= binomial(link = logit), data=trainSet)
+summary(gam.fit0.0)
+saveRDS(gam.fit0.0,"child_gam.rds")
+
+#predict
 #read scaled stack raster dataframe
 predict_data<-readRDS("cor_data_2020.rds")
 
