@@ -4,6 +4,7 @@ library(data.table)
 library(matrixStats)
 library(quadprog)
 #load prediction
+
 #prediction from each child models of 5 fold
 mydata <- read.csv("childprediction.csv", stringsAsFactors =  F)
 mydata <- data.table(mydata)
@@ -37,7 +38,6 @@ colnames(C)[colnames(C) == "RFtest"] <- "RF"
 C <- as.matrix(C[c(child_models)])
 
 #Select which stacker you are using and stack the estimates
-#RWM is more often used, and will try it frist 
 stacker <- 'CWM'
 
 if(stacker == 'CWM'){
@@ -114,32 +114,4 @@ auc.test.RWM
 plot.roc(auc.test.RWM, print.auc=T, legacy.axes=T)
 
 
-##GAM AUC on train data
-auc.train.gam <- roc(stackers$occurrence~GAM_cv_pred, data=stackers)
-auc.train.gam
-plot.roc(auc.train.gam, print.auc=T, legacy.axes=T)
 
-#AUC on test data
-auc.test.gam <- roc(covs$occurrence~GAMtest, data=covs)
-auc.test.gam
-plot.roc(auc.test.gam, print.auc=T, legacy.axes=T)
-
-##BRT AUC on train data
-auc.train.BRT <- roc(stackers$occurrence~BRT_cv_pred, data=stackers)
-auc.train.BRT
-plot.roc(auc.train.BRT, print.auc=T, legacy.axes=T)
-
-#AUC on test data
-auc.test.BRT <- roc(covs$occurrence~BRTtest, data=covs)
-auc.test.BRT
-plot.roc(auc.test.BRT, print.auc=T, legacy.axes=T)
-
-##RF AUC on train data
-auc.train.RF<- roc(stackers$occurrence~RF_cv_pred, data=stackers)
-auc.train.RF
-plot.roc(auc.train.RF, print.auc=T, legacy.axes=T)
-
-#AUC on test data
-auc.test.RF <- roc(covs$occurrence~RFtest, data=covs)
-auc.test.RF
-plot.roc(auc.test.RF, print.auc=T, legacy.axes=T)
