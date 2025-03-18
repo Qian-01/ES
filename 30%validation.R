@@ -4,7 +4,6 @@ testSet<-readRDS("testset30%-0527.rds")
 #child RF
 #RF test data
 library(ranger)
-library(ranger)
 rf.fit1<-ranger(occurrence ~ prec+tmax+tmin+rh+ws+sp+ndvi+evi+
                           Water_bodies+Evergreen_Needleleaf_Forests+Evergreen_Broadleaf_Forests+
                           Deciduous_Needleleaf_Forests+Deciduous_Broadleaf_Forests+Mixed_Forests+
@@ -22,12 +21,31 @@ actual_labels_test <- as.numeric(testSet$occurrence)
 RF.roc_obj_test <- roc(actual_labels_test, RF.predicted_probs_test1)
 auc(RF.roc_obj_test)
 #save the predict for the test dataset
-
 results.test$`RFtest`<-RF.predicted_probs_test
 
 #child BRT
 
 #child GAM
+library(mgcv)
+gam.fit0.0<-readRDS("child_gam.rds")
+predictors_names<-c("Water_bodies", "Evergreen_Needleleaf_Forests", "Evergreen_Broadleaf_Forests",
+               "Deciduous_Needleleaf_Forests","Deciduous_Broadleaf_Forests","Mixed_Forests",
+               "Closed_Shrublands","Open_Shrublands","Woody_Savannas","Grasslands","Permanent_Wetlands",
+               "Croplands","Cropland_Natural_Vegetation_Mosaics",
+               "Snow_and_Ice","Barren_or_Sparsely_Vegetated","ndvi", "pop", "prec", 
+                     "tmax","ws","rh", "sp", "urban_acc_30s")
+predictors=trainSet[,predictors_names]
+predictors.test=testSet[,predictors_names]
+
+pred.test.gam<- predict(gam.fit0.0, testSet, type="response")
+auc.test.gam <- roc(testSet$occurrence~pred.test.gam, data=predictors.test)
+auc.test.gam#Area under the curve: #0.8889
+plot.roc(auc.test.gam, print.auc=T, legacy.axes=T)
+#save the predict for the test dataset
+results.test <- data.frame(testSet, `GAMtest` =pred.test.gam)
+
+
+
 
 #save prediction
 write.csv(results.test, "predChild_test.csv", row.names = FALSE)
