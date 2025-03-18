@@ -5,11 +5,11 @@ library(sf)
 library(data.table)
 #setwd()
 #read scaled stack raster dataframe
-predict_data<-readRDS("D:/ES-test/cor_data_2020.rds")
+predict_data<-readRDS("cor_data_2020.rds")
 
 #load GAM
 library(mgcv)
-gam.fit0.0<-readRDS("D:/ES-test/child_gam.rds")
+gam.fit0.0<-readRDS("child_gam.rds")
 
 #try parallel
 library(parallel)
@@ -37,20 +37,20 @@ stopCluster(cl)
 
 # Optionally, convert the result to a vector if it's not already
 GAM_predictions1 <- as.vector(GAM_predictions)
-saveRDS(GAM_predictions1,"D:/ES-test/gam_glopred.rds")
+saveRDS(GAM_predictions1,"gam_glopred.rds")
 
 GAM_se.fits <- as.vector(GAM_se.fits)
-saveRDS(GAM_se.fits,"D:/ES-test/gam_glopred_se.rds")
+saveRDS(GAM_se.fits,"gam_glopred_se.rds")
 
 lower_bounds <- predictions - 1.96 * se.fits
 upper_bounds <- predictions + 1.96 * se.fits
 GAM_lower <- as.vector(lower_bounds)
 GAM_upper <- as.vector(upper_bounds)
-saveRDS(GAM_lower,"D:/ES-test/gam_glopred_lower.rds")
-saveRDS(GAM_upper,"D:/ES-test/gam_glopred_upper.rds")
+saveRDS(GAM_lower,"gam_glopred_lower.rds")
+saveRDS(GAM_upper,"gam_glopred_upper.rds")
 
 # Assuming all_covariates_stack is original stack with the correct dimensions
-template_raster <- raster("D:/ES-test/annual_prec_2020.tif")
+template_raster <- raster("annual_prec_2020.tif")
 
 # Convert GAM predictions to raster
 GAM_raster <- template_raster
@@ -62,7 +62,7 @@ values(GAMlow_raster) <- GAM_lower
 GAMup_raster <- template_raster
 values(GAMup_raster) <- GAM_upper
 # Save GAM prediction raster
-writeRaster(GAM_raster, filename = "D:/ES-test/GAM_predictions_glo1.tif", format = "GTiff", overwrite = TRUE)
-writeRaster(GAMse_raster, filename = "D:/ES-test/GAM_predictions_se.tif", format = "GTiff", overwrite = TRUE)
-writeRaster(GAMlow_raster, filename = "D:/ES-test/GAM_predictions_low.tif", format = "GTiff", overwrite = TRUE)
-writeRaster(GAMup_raster, filename = "D:/ES-test/GAM_predictions_up.tif", format = "GTiff", overwrite = TRUE)
+writeRaster(GAM_raster, filename = "GAM_predictions_glo1.tif", format = "GTiff", overwrite = TRUE)
+writeRaster(GAMse_raster, filename = "GAM_predictions_se.tif", format = "GTiff", overwrite = TRUE)
+writeRaster(GAMlow_raster, filename = "GAM_predictions_low.tif", format = "GTiff", overwrite = TRUE)
+writeRaster(GAMup_raster, filename = "GAM_predictions_up.tif", format = "GTiff", overwrite = TRUE)
