@@ -52,6 +52,6 @@ for (i in 1:length(folds)) {
 }
 result_data <- trainSet
 result_data$GAM <- gam_predictions
-result_data$BRT_cv_pred <- brt_predictions
+result_data$BRT <- brt_predictions
 result_data$RF <- rf_predictions
 write.csv(result_data, "childprediction.csv", row.names = FALSE)
