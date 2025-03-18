@@ -1,5 +1,5 @@
 #stack ensemble weight mean by R-sqr
-weights <- c(GAM = 0.2837838 , BRT = 0.3738739, RF = 0.3738739)#number obtained from stacking ensemble method.R
+weights <- c(GAM = 0.2837838 , BRT = 0.3738739, RF = 0.3738739)#number obtained from stack ensemble method.R
 
 #RWM se
 weighted_GAMse <- GAM_se.fits * weights["GAM"]
@@ -13,7 +13,7 @@ values(RWMse_raster) <- RWMse_predictions
 writeRaster(RWMse_raster, filename = "D:/ES-test/RWMse_predictions_glo.tif", format = "GTiff", overwrite = TRUE)
 
 #stack ensemble weight mean by CWM
-weights2 <- c(GAM = 0.000001 , BRT = 0.000001 , RF = 0.999998)#number obtained from stacking ensemble method.R
+weights2 <- c(GAM = 0.000001 , BRT = 0.000001 , RF = 0.999998)#number obtained from stack ensemble method.R
 
 # CWM se
 weighted_GAM2se <- GAM_se.fits * weights2["GAM"]
